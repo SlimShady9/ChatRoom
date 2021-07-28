@@ -7,7 +7,7 @@ const io = require("socket.io")(server, {
       origin: "*",
     }
   });
-const port = 8000
+const port = (process.env.PORT || 8000)
 
 server.listen(port, () => {
     console.log('Server listening on port ' + port);
