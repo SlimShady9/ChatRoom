@@ -25,7 +25,7 @@ import { io } from 'socket.io-client'
 
 export default {
     setup() {
-        const conection = "https://pure-badlands-36104.herokuapp.com/"
+        const conection = "https://pure-badlands-36104.herokuapp.com"
         const socket = io(conection)
         const store = useStore()
         const msg = ref('')
