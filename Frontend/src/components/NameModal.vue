@@ -20,7 +20,7 @@ export default {
         
         const confirmar = () => {
             if (name.value) {
-                store.commit('setName', name.value)
+                store.dispatch('makeConnection', name.value)
                 showMod.value = false
             }
         }
