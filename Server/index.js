@@ -15,9 +15,14 @@ server.listen(port, () => {
 
 io.on('connection', (socket) => {
     console.log('An user connected');
+    socket.name = socket.handshake.query.name
+    io.fetchSockets()
+    .then(sockets => sockets.map((socket) => socket.name))
+    .then(socketsNames => io.emit('send active user list', socketsNames))
     socket.on('send message', msg => {
       console.log(msg);
       io.emit('send message', msg)
     })
+    socket.on('disconnect', () => io.emit(('user disconnected'), socket.name))
 
 })

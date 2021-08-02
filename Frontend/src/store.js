@@ -1,9 +1,13 @@
 import { createStore } from 'vuex'
+import { io } from 'socket.io-client'
 
 const store = createStore({
     state: {
         name: '',
         chatHistory: [],
+        socket: undefined,
+        port: "localhost:8000",
+        connectedUsers: []
     },
     mutations: {
         setName(state, name) {
@@ -15,8 +19,24 @@ const store = createStore({
                 message.isSelf = true;
             }
             state.chatHistory.push(message);
+        },
+        setActiveUsers(state, userList){
+            state.connectedUsers = userList
+        },
+        removeActiveUser(state, name){
+            state.connectedUsers = state.connectedUsers.filter((objName) => objName != name)
         }
     },
+    actions: {
+        makeConnection(context, name) {
+            context.state.socket = io(context.state.port, {
+                query: {
+                    name: name,
+                }
+            })
+            context.commit('setName', name)
+        }
+    }
 })
 
 export default store
