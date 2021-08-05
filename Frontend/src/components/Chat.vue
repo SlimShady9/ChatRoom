@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-auto" id="messages">
+  <div class="overflow-auto relative scrollbar-thin scrollbar-thumb-blue-700 scrollbar-thumb-rounded scrollbar-track-blue-300" id="messages">
     <div v-for="(item, index) in historial" v-bind:key="index">
       <div class="flex m-4" :class="!item.isSelf ? 'flex-row-reverse': ''">
         <img src="../assets/user.png" alt="" class="h-12 md:h-20">
@@ -22,6 +22,7 @@ export default {
   setup() {
     const store = useStore()
     const historial = computed(() => store.state.chatHistory)
+    const usersTyping = computed(() => store.state.usersTyping)
 
 
     onUpdated(() => {
@@ -30,14 +31,14 @@ export default {
       const sh = container.scrollHeight;
       const st = container.scrollTop;
       const ht = container.offsetHeight;
-      console.log(st + ht , sh);
       if(sh - st - ht < 100) {
         container.scrollTop = container.scrollHeight
       }
     })
 
     return {
-      historial
+      historial,
+      usersTyping
     }
   },
 }

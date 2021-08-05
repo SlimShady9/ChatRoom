@@ -1,11 +1,11 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 grid-rows-5 bg-indigo-200 p-4 h-full gap-4" >
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 grid-rows-5 bg-indigo-200 p-4 h-full gap-4" >
     <NameModal></NameModal>
-    <Info :class="showOptions ? 'block md:col-span-1 md:col-start-3' : 'hidden'" @closeInfo="setShowOptions(false)"
+    <Info :class="showOptions ? 'block md:col-span-1 md:col-start-3 lg:col-start-4' : 'hidden'" @closeInfo="setShowOptions(false)"
     class=" row-span-5 rounded-2xl"/>
     <!-- Header -->
     <div class="grid grid-cols-3 place-items-center bg-gray-100 rounded-2xl"
-    :class="!showOptions ? 'block md:col-span-3' : 'hidden md:grid md:col-span-2 md:col-start-1 md:row-start-1'">
+    :class="!showOptions ? 'block md:col-span-3 lg:col-span-4': 'hidden md:grid md:col-span-2 lg:col-span-3 md:col-start-1 md:row-start-1'">
       <div class="flex col-start-2">
         <img class="h-20 md:h-32" alt="Vue logo" src="./assets/logo.png" />
         <p class=" text-3xl font-extrabold self-center hidden md:block">Chat Room</p>
@@ -22,9 +22,15 @@
     </div>
     <!-- body -->
     <div class="row-start-2 row-end-6 grid grid-rows-6 gap-2"
-    :class="!showOptions ? 'block md:col-span-3' : 'hidden md:col-span-2 md:col-start-1 md:grid'">
+    :class="!showOptions ? 'block md:col-span-3 lg:col-span-4' : 'hidden md:col-span-2 lg:col-span-3 md:col-start-1 md:grid'">
       <Chat v-if="socket" class="bg-gray-100 rounded-md row-span-6"/>
-      <Input v-if="socket"/>
+      <div>
+        <Input v-if="socket"/>
+        <div class="flex ml-4 mt-2" v-if="strUsersTyping">
+          <p class="font-bold">{{strUsersTyping}}</p>
+          <p class="ml-1">{{sufixUsr}}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -50,6 +56,30 @@ export default{
     const store = useStore()
     const socket = computed(() => store.state.socket)
     const showOptions = ref(false)
+    const usersTyping = computed(() => store.state.usersTyping)
+    const strUsersTyping = computed(() => {
+      var ret = ''
+      if (usersTyping.value.length >= 4){
+        ret = 'Varios usuarios estan escribiendo'
+      } else if(usersTyping.value.length > 0){
+        let aux = ''
+        usersTyping.value.forEach(name => {
+          aux += `${name}, `
+        });
+        ret = aux.slice(0, -2)
+      } else {
+        ret = usersTyping.value[0]
+      }
+      return ret
+    })
+    const sufixUsr = computed(() => {
+      if (usersTyping.value.length === 1) {
+        return 'esta escribiendo...'
+      } else if (usersTyping.value.length > 4){
+        return ''
+      }
+      return 'estan escribiendo...'
+    })
     
     const setShowOptions = (value) => {
       showOptions.value = value
@@ -59,6 +89,8 @@ export default{
       socket,
       showOptions,
       setShowOptions,
+      strUsersTyping,
+      sufixUsr,
     }
   }
 

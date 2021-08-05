@@ -24,5 +24,11 @@ io.on('connection', (socket) => {
       io.emit('send message', msg)
     })
     socket.on('disconnect', () => io.emit(('user disconnected'), socket.name))
+    socket.on('user typing', () => {
+      io.emit('user typing', socket.name)
+    })
+    socket.on('user stop typing', () => {
+      io.emit('user stop typing', socket.name)
+    })
 
 })
