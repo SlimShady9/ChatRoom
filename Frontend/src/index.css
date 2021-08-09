@@ -2,3 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn-mv{
+    @apply bg-blue-300 m-2 py-3 px-4 rounded shadow-lg font-semibold text-center text-white hover:bg-blue-400 transform hover:scale-110 transition
+}

@@ -71,12 +71,15 @@ export default {
             showEmojis.value = false
             if (msg.value){
                 socket.emit('send message', {name: store.state.name, content: msg.value})
+                socket.emit('user stop typing')
+                checkMsg = ''
                 msg.value = ''
             }
         }
 
         const addEmoji = (emoji) => {
             msg.value += emoji.native
+            checkMsg += emoji
         }
 
         const checkTyping = () => {
