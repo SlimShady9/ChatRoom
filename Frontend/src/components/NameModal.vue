@@ -10,21 +10,20 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+
 export default {
     setup() {
-        const showMod = ref(true)
-        const name = ref('')
         const store = useStore()
+        const showMod = computed(() => !store.state.name ? true : false)
+        const name = ref('')
         
         const confirmar = () => {
             if (name.value) {
-                store.dispatch('makeConnection', name.value)
-                showMod.value = false
+                store.dispatch('addName', name.value)
             }
         }
-
         return {
             showMod,
             name,

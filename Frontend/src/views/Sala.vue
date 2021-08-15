@@ -1,6 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 grid-rows-5 bg-indigo-200 p-4 h-full gap-4" >
-    <NameModal></NameModal>
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 grid-rows-5 bg-indigo-200 p-4 h-full gap-4">
     <Info :class="showOptions ? 'block md:col-span-1 md:col-start-3 lg:col-start-4' : 'hidden'" @closeInfo="setShowOptions(false)"
     class=" row-span-5 rounded-2xl"/>
     <!-- Header -->
@@ -21,7 +20,7 @@
       </button>
     </div>
     <!-- body -->
-    <div class="row-start-2 row-end-6 grid grid-rows-6 gap-2"
+    <div class="row-span-4 grid grid-rows-6 gap-2"
     :class="!showOptions ? 'block md:col-span-3 lg:col-span-4' : 'hidden md:col-span-2 lg:col-span-3 md:col-start-1 md:grid'">
       <Chat v-if="socket" class="bg-gray-100 rounded-md row-span-6"/>
       <div>
@@ -43,24 +42,25 @@
 <script>
 import Chat from '../components/Chat.vue'
 import Input from '../components/Input.vue'
-import NameModal from '../components/NameModal.vue'
 import Info from '../components/Info.vue'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import { useRoute, onBeforeRouteLeave } from 'vue-router'
 
 export default{
 
   components: {
     Chat,
     Input,
-    NameModal,
     Info,
   },
 
   setup(){
     const store = useStore()
-    const socket = computed(() => store.state.socket)
     const showOptions = ref(false)
+
+    const socket = computed(() => store.state.socket)
+
     const usersTyping = computed(() => store.state.usersTyping)
     const strUsersTyping = computed(() => {
       var ret = ''
