@@ -6,8 +6,7 @@ const store = createStore({
         name: '',
         chatHistory: [],
         socket: undefined,
-        port: "https://pure-badlands-36104.herokuapp.com",
-        connectedUsers: [],
+        uri: "localhost:8000",
         usersTyping: [],
     },
     mutations: {
@@ -20,9 +19,6 @@ const store = createStore({
                 message.isSelf = true;
             }
             state.chatHistory.push(message);
-        },
-        setActiveUsers(state, userList){
-            state.connectedUsers = userList
         },
         removeActiveUser(state, name){
             state.connectedUsers = state.connectedUsers.filter((objName) => objName != name)
@@ -37,14 +33,18 @@ const store = createStore({
         },
     },
     actions: {
-        makeConnection(context, name) {
-            context.state.socket = io(context.state.port, {
-                query: {
-                    name: name,
+        makeConnection(context) {
+            context.state.socket = io(context.state.uri)
+        },
+        addName(context, name) {
+            context.state.socket.emit('add name', name, (response) => {
+                if (response.nameUniqueness) {
+                    context.commit('setName', name)
                 }
             })
-            context.commit('setName', name)
+            
         }
+
     }
 })
 

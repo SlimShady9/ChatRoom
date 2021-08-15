@@ -31,7 +31,7 @@
 <script>
 import { ref } from "vue"
 import { useStore } from 'vuex'
-
+import { useRoute } from 'vue-router'
 import data from "emoji-mart-vue-fast/data/all.json";
 // Note: component needs to be imported from /src subfolder:
 import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
@@ -46,19 +46,14 @@ export default {
         let emojiIndex = new EmojiIndex(data)
         const store = useStore()
         const msg = ref('')
-        var checkMsg = ''
+        const route = useRoute()
+        let checkMsg = ''
         const showEmojis = ref(false)
         const socket = store.state.socket
 
 
         socket.on('send message', (msg) => {
             store.commit('receiveMessage', msg)
-        })
-        socket.on('send active user list', (users) => {
-            store.commit('setActiveUsers', users)
-        })
-        socket.on('user disconnected', (userName) => {
-            store.commit('removeActiveUser', userName)
         })
         socket.on('user typing', (userName) => {
             store.commit('addUserTyping', userName)
@@ -70,23 +65,26 @@ export default {
         const sendMessage = () => {
             showEmojis.value = false
             if (msg.value){
-                socket.emit('send message', {name: store.state.name, content: msg.value})
+                socket.emit('send message', msg.value, `Sala ${route.params.id}`)
+                socket.emit('user stop typing', `Sala ${route.params.id}`)
+                checkMsg = ''
                 msg.value = ''
             }
         }
 
         const addEmoji = (emoji) => {
             msg.value += emoji.native
+            checkMsg += 'emoji'
         }
 
         const checkTyping = () => {
-            socket.emit('user typing')
+            socket.emit('user typing', `Sala ${route.params.id}`)
             checkMsg = msg.value
         }
 
         setInterval(() => {
             if (checkMsg === '') {
-                socket.emit('user stop typing')
+                socket.emit('user stop typing', `Sala ${route.params.id}`)
             } else {
                 checkMsg = ''
             }

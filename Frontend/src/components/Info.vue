@@ -8,8 +8,9 @@
                 </svg>
             </button>
             <div class="justify-self-stretch md:place-self-stretch grid">
-                <img src="../assets/room3.png" class="justify-self-center md:self-end md:mt-8 rounded-full h-28 max-w-xs md:max-h-52 md:max-w-lg">
+                <img :src="`/src/assets/room${roomNumber}.png`" class="justify-self-center md:self-end md:mt-8 rounded-full h-28 max-w-xs md:max-h-52 md:max-w-lg">
                 <button
+                @click="leaveRoom"
                 class="justify-self-start md:self-end m-4 flex text-red-500 hover:text-red-300 transition-colors duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 self-center" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -33,17 +34,42 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { reactive, computed } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter, useRoute } from 'vue-router'
 
 export default {
 
     setup() {
+        console.log('Info mounted!');
         const store = useStore()
-        const userList = computed(() => store.state.connectedUsers)
+        const route = useRoute()
+        const router = useRouter()
+        const userList = reactive([])
+        const socket = computed(() => store.state.socket)
+        var roomNumber
+
+        socket.value.on('connected user list', users => {
+            userList.splice(0, userList.length)
+            users.forEach(user => {
+                userList.push(user)
+            });
+        })
+
+        
+        roomNumber = route.params.id
+        socket.value.emit('request connected users', `Sala ${route.params.id}`)
+
+
+        const leaveRoom = () => {
+            router.push('/')
+            socket.value.emit('leave room', `Sala ${route.params.id}`)
+        }
 
         return {
             userList,
+            roomNumber,
+            leaveRoom,
         }
     },
 }
