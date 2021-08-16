@@ -8,7 +8,7 @@
                 </svg>
             </button>
             <div class="justify-self-stretch md:place-self-stretch grid">
-                <img :src="`/src/assets/room${roomNumber}.png`" class="justify-self-center md:self-end md:mt-8 rounded-full h-28 max-w-xs md:max-h-52 md:max-w-lg">
+                <img :src="`/images/room${roomNumber}.png`" class="justify-self-center md:self-end md:mt-8 rounded-full h-28 max-w-xs md:max-h-52 md:max-w-lg">
                 <button
                 @click="leaveRoom"
                 class="justify-self-start md:self-end m-4 flex text-red-500 hover:text-red-300 transition-colors duration-200">

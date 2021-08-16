@@ -10,7 +10,7 @@
             <div v-for="room in roomsView" v-bind:key="room.name"
             :class="room.roomNumber !=  activeRoom ? 'scale-75 transform' : 'shadow-2xl'"
             class="bg-white grid grid-cols-5 md:grid-cols-1 md:grid-rows-5 rounded-2xl p-4 flex-1">
-                <img :src="`/src/assets/room${room.roomNumber}.png`"
+                <img :src="`/images/room${room.roomNumber}.png`"
                 class="col-span-2 md:row-span-3 place-self-center rounded-full w-28 h-28 md:w-56 md:h-56">
                 <div class="place-self-center col-span-3 md:row-span-2 md:self-start">
                     <div class="flex font-semibold text-gray-700 text-sm md:text-lg">
@@ -53,12 +53,10 @@ export default {
         console.log('Home mounted!');
         const listenEvents = socket => {
             socket.on('user list', info => {
-                info.forEach(infoRoom => {
-                    rooms.forEach(room => {
-                        if (room.name === infoRoom.name){
-                           room.users = infoRoom.users
-                        }
-                    })
+                rooms.forEach(room  => {
+                    const match = info.filter(roomName => room.name ===  roomName.name)
+                    console.log(match);
+                    room.users = match.length ? match[0].users : 0
                 })
             })
         }

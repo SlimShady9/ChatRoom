@@ -2,7 +2,7 @@
   <div class="overflow-auto relative scrollbar-thin scrollbar-thumb-blue-700 scrollbar-thumb-rounded scrollbar-track-blue-300" id="messages">
     <div v-for="(item, index) in historial" v-bind:key="index">
       <div class="flex m-4" :class="!item.isSelf ? 'flex-row-reverse': ''">
-        <img src="../assets/user.png" alt="" class="h-12 md:h-20">
+        <img src="/images/user.png" alt="" class="h-12 md:h-20">
         <div class="align-center px-4 py-2"
         :class="!item.isSelf ? 'rounded-l-xl mr-4 bg-pink-200': 'rounded-r-xl ml-4 bg-indigo-200'"
         >

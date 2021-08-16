@@ -21,7 +21,7 @@ server.listen(port, () => {
 io.on('connection', (socket) => {
   // initial conection and information
   socket.on('request user list', () => {
-    users = countUsers()
+    var users = countUsers()
     io.emit('user list', users)
   })
   socket.on('add name', (name, callback) => {
@@ -43,6 +43,8 @@ io.on('connection', (socket) => {
   })
   socket.on('join to room', roomName => {
     socket.join(roomName)
+    var users = countUsers()
+    io.emit('user list', users)
   })
   socket.on('leave room', roomName => {
     socket.leave(roomName)
@@ -51,7 +53,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('send message', (msg, socketRoom) => {
-    io.to(socketRoom).emit('send message', msg)
+    io.to(socketRoom).emit('send message', {content: msg, name: socket.name})
   })
   socket.on('disconnect', (socketRoom) => io.to(socketRoom).emit(('user disconnected'), socket.name))
   socket.on('user typing', (socketRoom) => {
@@ -81,5 +83,5 @@ const countUsers = () => {
 
 const getUsersFromRoom = roomName => {
   const users = io.sockets.adapter.rooms.get(roomName)
-  return Array.from(users).map(user => io.sockets.sockets.get(user).name)
+  return users ? Array.from(users).map(user => io.sockets.sockets.get(user).name) : 0
 }

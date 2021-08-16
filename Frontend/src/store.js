@@ -6,7 +6,7 @@ const store = createStore({
         name: '',
         chatHistory: [],
         socket: undefined,
-        uri: "localhost:8000",
+        uri: "https://pure-badlands-36104.herokuapp.com",
         usersTyping: [],
     },
     mutations: {
