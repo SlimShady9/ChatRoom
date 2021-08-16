@@ -6,7 +6,7 @@
     <div class="grid grid-cols-3 place-items-center bg-gray-100 rounded-2xl"
     :class="!showOptions ? 'block md:col-span-3 lg:col-span-4': 'hidden md:grid md:col-span-2 lg:col-span-3 md:col-start-1 md:row-start-1'">
       <div class="flex col-start-2">
-        <img class="h-20 md:h-32" alt="Vue logo" src="../assets/logo.png" />
+        <img class="h-20 md:h-32" alt="Vue logo" src="/images/logo.png"/>
         <p class=" text-3xl font-extrabold self-center hidden md:block">Chat Room</p>
       </div>
       <button class="col-start-3 self-start justify-self-end m-4 " @click="setShowOptions(!showOptions)">
