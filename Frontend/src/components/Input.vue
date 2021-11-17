@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import data from "emoji-mart-vue-fast/data/all.json";
@@ -49,24 +49,27 @@ export default {
         const route = useRoute()
         let checkMsg = ''
         const showEmojis = ref(false)
-        const socket = store.state.socket
+        const socket = computed(() => store.state.socket)
+        const isMounted = computed(() => store.state.mounted)
 
-
-        socket.on('send message', (msg) => {
-            store.commit('receiveMessage', msg)
-        })
-        socket.on('user typing', (userName) => {
-            store.commit('addUserTyping', userName)
-        })
-        socket.on('user stop typing', (userName) => {
-            store.commit('removeUserTyping', userName)
-        })
+        if (!isMounted.value) {
+            socket.value.on('recieve message', (mes) => {
+            store.commit('receiveMessage', mes)
+            })
+            socket.value.on('user typing', (userName) => {
+                store.commit('addUserTyping', userName)
+            })
+            socket.value.on('user stop typing', (userName) => {
+                store.commit('removeUserTyping', userName)
+            })
+            store.state.mounted = true
+        }
 
         const sendMessage = () => {
             showEmojis.value = false
             if (msg.value){
-                socket.emit('send message', msg.value, `Sala ${route.params.id}`)
-                socket.emit('user stop typing', `Sala ${route.params.id}`)
+                socket.value.emit('send message', msg.value, `Sala ${route.params.id}`)
+                socket.value.emit('user stop typing', `Sala ${route.params.id}`)
                 checkMsg = ''
                 msg.value = ''
             }
@@ -78,13 +81,13 @@ export default {
         }
 
         const checkTyping = () => {
-            socket.emit('user typing', `Sala ${route.params.id}`)
+            socket.value.emit('user typing', `Sala ${route.params.id}`)
             checkMsg = msg.value
         }
 
         setInterval(() => {
             if (checkMsg === '') {
-                socket.emit('user stop typing', `Sala ${route.params.id}`)
+                socket.value.emit('user stop typing', `Sala ${route.params.id}`)
             } else {
                 checkMsg = ''
             }

@@ -45,7 +45,6 @@ import Input from '../components/Input.vue'
 import Info from '../components/Info.vue'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRoute, onBeforeRouteLeave } from 'vue-router'
 
 export default{
 

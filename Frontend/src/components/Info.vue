@@ -63,6 +63,7 @@ export default {
 
         const leaveRoom = () => {
             router.push('/')
+            store.commit('clearChat')
             socket.value.emit('leave room', `Sala ${route.params.id}`)
         }
 

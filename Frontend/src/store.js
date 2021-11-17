@@ -8,10 +8,14 @@ const store = createStore({
         socket: undefined,
         uri: "https://pure-badlands-36104.herokuapp.com",
         usersTyping: [],
+        mounted: false,
     },
     mutations: {
         setName(state, name) {
             state.name = name;
+        },
+        clearChat(state) {
+            state.chatHistory = [];
         },
         receiveMessage(state, message){
             message.isSelf = false;

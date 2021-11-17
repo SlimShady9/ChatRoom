@@ -2,6 +2,7 @@
  * Author : Laura Daniela Chiquillo Leon (el amor de mi vida)
  */
 
+const { log } = require('console');
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -20,14 +21,15 @@ server.listen(port, () => {
 
 io.on('connection', (socket) => {
   // initial conection and information
+  console.log('a user connected');
   socket.on('request user list', () => {
     var users = countUsers()
     io.emit('user list', users)
   })
   socket.on('add name', (name, callback) => {
-    uniqueName = true
+    var uniqueName = true
     io.fetchSockets()
-    .then(sockets => sockets.map(socket => socket.name ? socket.name : ''))
+    .then(sockets => sockets.map(sock => sock.name ? sock.name : ''))
     .then(socketNames => socketNames.forEach( i => {
       if (i.toUpperCase() === name.toUpperCase()) uniqueName = false
     }))
@@ -42,18 +44,23 @@ io.on('connection', (socket) => {
 
   })
   socket.on('join to room', roomName => {
+    console.log('joining to room', roomName)
     socket.join(roomName)
+    console.log(socket.rooms)
     var users = countUsers()
     io.emit('user list', users)
   })
   socket.on('leave room', roomName => {
+    console.log('leaving room' , roomName)
     socket.leave(roomName)
+    console.log(socket.rooms)
     var userList = getUsersFromRoom(roomName)
     io.to(roomName).emit('connected user list', userList)
   })
 
   socket.on('send message', (msg, socketRoom) => {
-    io.to(socketRoom).emit('send message', {content: msg, name: socket.name})
+    console.log('message sent', msg)
+    io.to(socketRoom).emit('recieve message', {content: msg, name: socket.name})
   })
   socket.on('disconnect', (socketRoom) => io.to(socketRoom).emit(('user disconnected'), socket.name))
   socket.on('user typing', (socketRoom) => {
